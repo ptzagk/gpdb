@@ -16,13 +16,14 @@ func (s *AgentServer) UpgradeConvertPrimarySegments(ctx context.Context, in *pb.
 	gplog.Info("got a request to convert primary from the hub")
 
 	filename := "pg_upgrade_dump_*_oids.sql"
-	oidFiles, err := utils.System.FilePathGlob(filepath.Join(s.conf.StateDir, "pg_upgrade", filename))
+	shareOIDfilePath := filepath.Join(s.conf.StateDir, "pg_upgrade", filename)
+	oidFiles, err := utils.System.FilePathGlob(shareOIDfilePath)
 	if err != nil {
 		gplog.Error("ls OID files failed. Err: %v", err)
 		return &pb.UpgradeConvertPrimarySegmentsReply{}, err
 	}
 	if len(oidFiles) == 0 {
-		gplog.Error("Share OID files do not exist. Err: %v", err)
+		gplog.Error("Share OID files do not exist. Err: %s", shareOIDfilePath)
 		return &pb.UpgradeConvertPrimarySegmentsReply{}, errors.New("No OID files found")
 	}
 
