@@ -83,6 +83,9 @@ type spyConfigReader struct {
 
 func newSpyConfigReader() *spyConfigReader { return &spyConfigReader{} }
 
+func (scr *spyConfigReader) GetSegmentHostnames() ([]string, error) {
+	return scr.GetHostnames()
+}
 func (scr *spyConfigReader) GetHostnames() ([]string, error) {
 	if scr.failToGetHostnames {
 		return nil, errors.New("force failure - no config")

@@ -2,13 +2,13 @@ package services
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"path/filepath"
 
 	pb "gp_upgrade/idl"
 	"gp_upgrade/utils"
 
-	"errors"
 	"github.com/greenplum-db/gp-common-go-libs/gplog"
 )
 
@@ -22,6 +22,7 @@ func (s *AgentServer) UpgradeConvertPrimarySegments(ctx context.Context, in *pb.
 		gplog.Error("ls OID files failed. Err: %v", err)
 		return &pb.UpgradeConvertPrimarySegmentsReply{}, err
 	}
+	//len(nil) = 0
 	if len(oidFiles) == 0 {
 		gplog.Error("Share OID files do not exist. Err: %s", shareOIDfilePath)
 		return &pb.UpgradeConvertPrimarySegmentsReply{}, errors.New("No OID files found")

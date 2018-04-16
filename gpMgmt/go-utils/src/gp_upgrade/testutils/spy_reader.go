@@ -19,6 +19,9 @@ func (r *SpyReader) GetHostnames() ([]string, error) {
 	return r.Hostnames, r.Err
 }
 
+func (r *SpyReader) GetSegmentHostnames() ([]string, error) {
+	return nil, nil
+}
 func (r *SpyReader) GetSegmentConfiguration() configutils.SegmentConfiguration {
 	var segmentConf configutils.SegmentConfiguration
 	if len(r.SegmentConfigurations) != 0 {

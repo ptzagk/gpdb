@@ -73,7 +73,19 @@ func (reader *Reader) GetPortForSegment(segmentDbid int) int {
 	return result
 }
 
+func (reader *Reader) GetSegmentHostnames() ([]string, error) {
+	return reader.getHostnames(false, -1)
+}
+
 func (reader *Reader) GetHostnames() ([]string, error) {
+	return reader.getHostnames(false, -2)
+}
+
+// if matchContentID is true, return the hostname of the provided contentID
+// else, return hostnames for all contentIDs not matching the provided contentID
+// practically, false -1 return all hosts in the cluster except master
+// false -2 returns all hosts in the cluster
+func (reader *Reader) getHostnames(matchContentID bool, contentID int) ([]string, error) {
 	reader.mu.RLock()
 	defer reader.mu.RUnlock()
 
@@ -86,9 +98,14 @@ func (reader *Reader) GetHostnames() ([]string, error) {
 
 	hostnamesSeen := make(map[string]bool)
 	for i := 0; i < len(reader.config); i++ {
-		_, contained := hostnamesSeen[reader.config[i].Hostname]
+		hostName := reader.config[i].Hostname
+		_, contained := hostnamesSeen[hostName]
 		if !contained {
-			hostnamesSeen[reader.config[i].Hostname] = true
+			if matchContentID && contentID == reader.config[i].Content {
+				hostnamesSeen[reader.config[i].Hostname] = true
+			} else if !matchContentID && contentID != reader.config[i].Content {
+				hostnamesSeen[reader.config[i].Hostname] = true
+			}
 		}
 	}
 	var hostnames []string

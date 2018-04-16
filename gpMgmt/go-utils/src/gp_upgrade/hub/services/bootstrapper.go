@@ -16,6 +16,7 @@ type Bootstrapper struct {
 
 type HostnameGetter interface {
 	GetHostnames() ([]string, error)
+	GetSegmentHostnames() ([]string, error)
 }
 
 type RemoteExecutor interface {
@@ -46,7 +47,7 @@ func (s *Bootstrapper) CheckSeginstall(ctx context.Context, in *pb.CheckSeginsta
 func (s *Bootstrapper) PrepareStartAgents(ctx context.Context,
 	in *pb.PrepareStartAgentsRequest) (*pb.PrepareStartAgentsReply, error) {
 
-	clusterHostnames, err := s.hostnameGetter.GetHostnames()
+	clusterHostnames, err := s.hostnameGetter.GetSegmentHostnames()
 	if err != nil || len(clusterHostnames) == 0 {
 		return &pb.PrepareStartAgentsReply{}, errors.New("no cluster config found, did you forget to run gp_upgrade check config?")
 	}
