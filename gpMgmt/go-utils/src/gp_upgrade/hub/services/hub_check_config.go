@@ -28,7 +28,8 @@ var CONFIGQUERY5 = `SELECT
 	e.fselocation as datadir,
 	s.dbid,
 	s.preferred_role,
-	s.role
+	s.role,
+	s.port
 	FROM gp_segment_configuration s
 	JOIN pg_filespace_entry e ON s.dbid = e.fsedbid
 	JOIN pg_filespace f ON e.fsefsoid = f.oid
@@ -41,7 +42,8 @@ var CONFIGQUERY6 = `SELECT
 	datadir,
 	dbid,
 	preferred_role,
-	role
+	role,
+	port
 	FROM gp_segment_configuration
 	WHERE role = 'p'
 	ORDER BY content;`
